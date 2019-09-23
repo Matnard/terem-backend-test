@@ -12,6 +12,10 @@
   "homepage": "https://www.matnard.com",
   "license": "MIT",
   "main": "src/index.js",
+  "bin": {
+    "@matnard/terem-backend-test": "bin/terem-backend-test",
+    "terem-backend-test": "bin/terem-backend-test"
+  },
   "directories": {
     "src": "src",
     "test": "__tests__"
@@ -19,9 +23,7 @@
   "files": [
     "src"
   ],
-  "publishConfig": {
-    "access": "private"
-  },
+  "private": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Matnard/terem-backend-test.git"

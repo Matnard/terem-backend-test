@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 
-module.exports = teremBackendTest;
-
-function teremBackendTest() {
-    // TODO
+function cli(args) {
+  console.log(args);
 }
+
+module.exports = { cli };
