@@ -1,0 +1,39 @@
+{
+  "name": "@matnard/terem-backend-test",
+  "version": "0.0.0",
+  "description": "a library which reads any given BOM weather data CSV file and converts",
+  "keywords": [
+    "the",
+    "data",
+    "to",
+    "JSON"
+  ],
+  "author": "Mathieu Mence <Mathieu.Mence@matnard.com>",
+  "homepage": "https://www.matnard.com",
+  "license": "MIT",
+  "main": "src/index.js",
+  "directories": {
+    "src": "src",
+    "test": "__tests__"
+  },
+  "files": [
+    "src"
+  ],
+  "publishConfig": {
+    "access": "private"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Matnard/terem-backend-test.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/Matnard/terem-backend-test/issues"
+  },
+  "dependencies": {
+    "commander": "^3.0.1",
+    "inquirer": "^7.0.0"
+  }
+}
