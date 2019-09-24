@@ -35,6 +35,7 @@
     "url": "https://github.com/Matnard/terem-backend-test/issues"
   },
   "dependencies": {
+    "array-flat-polyfill": "^1.0.1",
     "commander": "^3.0.1",
     "csv-parse": "^4.4.6",
     "inquirer": "^7.0.0",

@@ -1,4 +1,5 @@
 "use strict";
+require("array-flat-polyfill");
 const info = require("../package.json");
 const path = require("path");
 const fs = require("fs");
@@ -13,13 +14,7 @@ const {
 } = require("./system-actions");
 
 const {
-  getFirstRecordedDate,
-  getLastRecordedDate,
-  getLongestNumberOfDaysRaining,
-  getDaysWithRainfall,
-  getDaysWithNoRainfall,
-  getAverageDailyRainfall,
-  getTotalRainfall,
+  makeYearReports,
   groupPerYear,
   setDate,
   linkKeyToValue,
@@ -32,7 +27,6 @@ program
   .command("parse <path> [destination]")
   .description("parses BOM weather data CSV file and converts the data to JSON")
   .action((pathToFile, destination) => {
-    debugger;
     const resolvedPath = path.resolve(pathToFile);
     if (isCSV(resolvedPath)) {
       const weatherData = fs.readFileSync(resolvedPath, {
@@ -44,7 +38,7 @@ program
       })
         .filter(isValidWeatherTuple)
         .map(linkKeyToValue)
-        .slice(1) //removes first entry which held the labels
+        .slice(1, 400) //removes first entry which held the labels
         .map(setDate)
         .reduce(groupPerYear, new Map());
 
@@ -53,7 +47,7 @@ program
       const resolvedPathToDestination = getResolvedPath(destination);
 
       if (resolvedPathToDestination === null) {
-        console.log(yearReports);
+        console.log(JSON.stringify(yearReports, null, "  "));
       } else if (fs.existsSync(resolvedPathToDestination)) {
         const filename = getOriginalFilename(resolvedPath);
         const outputFilePath = path.join(
@@ -69,30 +63,9 @@ program
     }
   });
 
+//if no arguments passed, sets value to -h to force commander to show the help info
 if (process.argv[2] === undefined) {
   process.argv[2] = "-h";
 }
 
 program.parse(process.argv);
-
-function makeYearReports(perYearRecordsMap) {
-  return {
-    WeatherData: Array.from(perYearRecordsMap.keys()).map(year => {
-      const entriesForTheYear = perYearRecordsMap.get(year);
-      return {
-        WeatherDataForYear: {
-          Year: year,
-          FirstRecordedDate: getFirstRecordedDate(entriesForTheYear),
-          LastRecordedDate: getLastRecordedDate(entriesForTheYear),
-          TotalRainfall: getTotalRainfall(entriesForTheYear),
-          AverageDailyRainfall: getAverageDailyRainfall(entriesForTheYear),
-          DaysWithNoRainfall: getDaysWithNoRainfall(entriesForTheYear),
-          DaysWithRainfall: getDaysWithRainfall(entriesForTheYear),
-          LongestNumberOfDaysRaining: getLongestNumberOfDaysRaining(
-            entriesForTheYear
-          )
-        }
-      };
-    })
-  };
-}

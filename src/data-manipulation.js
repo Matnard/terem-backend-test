@@ -1,6 +1,59 @@
 const moment = require("moment");
 const DECIMAL_PRECISION = 3;
 
+function makeMonthReport([Month, entries]) {
+  return {
+    Month,
+    FirstRecordedDate: getFirstRecordedDate(entries),
+    LastRecordedDate: getLastRecordedDate(entries),
+    TotalRainfall: getTotalRainfall(entries),
+    AverageDailyRainfall: getAverageDailyRainfall(entries),
+    MedianDailyRainfall: getMedianDailyRainfall(entries),
+    DaysWithNoRainfall: getDaysWithNoRainfall(entries),
+    DaysWithRainfall: getDaysWithRainfall(entries)
+  };
+}
+
+function makeYearReports(perYearRecordsMap) {
+  return {
+    WeatherData: Array.from(perYearRecordsMap.keys()).map(year => {
+      const entries = getEntriesEntriesForGivenYear(perYearRecordsMap, year);
+
+      const monthEntries = Array.from(perYearRecordsMap.get(year).entries());
+
+      return {
+        WeatherDataForYear: {
+          Year: year,
+          FirstRecordedDate: getFirstRecordedDate(entries),
+          LastRecordedDate: getLastRecordedDate(entries),
+          TotalRainfall: getTotalRainfall(entries),
+          AverageDailyRainfall: getAverageDailyRainfall(entries),
+          DaysWithNoRainfall: getDaysWithNoRainfall(entries),
+          DaysWithRainfall: getDaysWithRainfall(entries),
+          LongestNumberOfDaysRaining: getLongestNumberOfDaysRaining(entries),
+          MonthlyAggregates: {
+            WeatherDataForMonth: monthEntries.map(makeMonthReport)
+          }
+        }
+      };
+    })
+  };
+}
+
+function median(arr) {
+  const mid = Math.floor(arr.length / 2),
+    nums = [...arr].sort((a, b) => a - b);
+  return arr.length % 2 !== 0 ? nums[mid] : (nums[mid - 1] + nums[mid]) / 2;
+}
+
+function getMedianDailyRainfall(dayEntries) {
+  return median(dayEntries.map(({ rainfallAmount }) => Number(rainfallAmount)));
+}
+
+function getEntriesEntriesForGivenYear(recordMap, year) {
+  return Array.from(recordMap.get(year).values()).flat();
+}
+
 function formatRecordedDate(date) {
   return moment(date).format("YYYY-MM-DD");
 }
@@ -72,9 +125,14 @@ function getTotalRainfall(dayEntries) {
 }
 
 function groupPerYear(map, dayEntry) {
-  const { Year } = dayEntry;
-  const entries = map.get(Year) || [];
-  return map.set(Year, [...entries, dayEntry]);
+  const { Year, date } = dayEntry;
+  const monthName = moment(date).format("MMMM");
+  const months = map.get(Year) || new Map();
+
+  const entries = months.get(monthName) || [];
+  months.set(monthName, [...entries, dayEntry]);
+
+  return map.set(Year, months);
 }
 
 function setDate(entry) {
@@ -103,6 +161,9 @@ function isValidWeatherTuple(arr) {
 }
 
 module.exports = {
+  makeYearReports,
+  getMedianDailyRainfall,
+  getEntriesEntriesForGivenYear,
   formatRecordedDate,
   getFirstRecordedDate,
   getLastRecordedDate,
