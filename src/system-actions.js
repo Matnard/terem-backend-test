@@ -15,7 +15,7 @@ function getResolvedPath(pathSegment) {
 
 function writeSJsonToFile(path, data) {
   try {
-    fs.writeFileSync(path, JSON.stringify(data, null, " "), {
+    fs.writeFileSync(path, JSON.stringify(data, null, "  "), {
       encoding: "utf-8"
     });
   } catch (err) {

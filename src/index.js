@@ -29,16 +29,21 @@ program
   .action((pathToFile, destination) => {
     const resolvedPath = path.resolve(pathToFile);
     if (isCSV(resolvedPath)) {
-      const weatherData = fs.readFileSync(resolvedPath, {
-        encoding: "utf-8"
-      });
+      let weatherData;
+      try {
+        weatherData = fs.readFileSync(resolvedPath, {
+          encoding: "utf-8"
+        });
+      } catch (err) {
+        throw new Error(err);
+      }
 
       const perYearRecords = parse(weatherData, {
         bom: true
       })
         .filter(isValidWeatherTuple)
         .map(linkKeyToValue)
-        .slice(1, 400) //removes first entry which held the labels
+        .slice(1) //removes first entry which held the labels
         .map(setDate)
         .reduce(groupPerYear, new Map());
 

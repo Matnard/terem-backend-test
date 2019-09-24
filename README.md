@@ -4,8 +4,14 @@
 
 ## Usage
 
-to create a symlink to the code and be able to test run:
+to create a symlink to the code and be able to test the cli run:
 
 ```
 npm link
+```
+
+to use the cli:
+
+```
+terem-backend-test parse <path> [destination]
 ```
