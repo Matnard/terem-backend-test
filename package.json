@@ -38,7 +38,7 @@
     "array-flat-polyfill": "^1.0.1",
     "commander": "^3.0.1",
     "csv-parse": "^4.4.6",
-    "moment": "^2.24.0"
+    "moment": "^2.29.2"
   },
   "devDependencies": {
     "jest": "^24.9.0"
